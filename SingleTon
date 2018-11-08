@@ -1,0 +1,36 @@
+学习设计模式
+一、	单例模式
+一个类仅能创建出一个实例。
+关键点:
+(1)	所以构造函数不能对外开放，为private；
+(2)	无法通过构造函数来创建对象了，所以需要一个静态函数或枚举提供创建对象功能；
+(3)	要确保单例类的对象有且只有一个，尤其是在多线程环境下；（困难在此处）
+(4)	确保单例类对单例类在反序列化时不会重新构建对象。
+使用场景：
+1、要求生产唯一序列号。
+2、WEB 中的计数器，不用每次刷新都在数据库里加一次，用单例先缓存起来。 
+3、创建的一个对象需要消耗的资源过多，比如 I/O 与数据库的连接等。
+	实现方式：
+饿汉模式：
+public class CEO
+{
+	/*饿汉模式*/
+	private static final CEO ceo=new CEO();
+	private CEO(){}
+	public static CEO getInstance(){
+		return ceo;
+	}
+}
+饿汉模式是在声明静态对象时就已经初始化了。
+懒汉模式：
+/*懒汉模式*/
+	private static CEO ceo;
+	private CEO(){}
+	public static synchronized CEO getInstance(){
+		if(ceo==null){
+			ceo=new CEO();
+		}
+		return ceo;
+	}
+懒汉模式的getInstance函数添加了synchronized关键字，也就是一个同步方法。这是在多线程下保证单例对象的唯一手段。
+缺点：每次调用getInstance函数都会进行同步，这样会消耗一些资源，这也是懒汉单例模式存在的最大问题。（这种模式一般不建议使用）
